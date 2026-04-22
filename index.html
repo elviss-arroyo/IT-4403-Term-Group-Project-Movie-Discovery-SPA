@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TMDB Movie Browser</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+<title>movie website</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="style2.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 </head>
 <body>
 
-
-                    <!-- THIS PART IS THE STICKY HEADER WITH SEARCH, NAV BUTTONS, AND AUTH AREA --> 
+<!-- header with search -->
 <header>
     <h1 style="color: #ffffff;">TMDB Browser</h1>
     <div class="header-search">
@@ -34,8 +33,7 @@
     </div>
 </header>
 
-
-                    <!-- THIS PART IS THE LOGIN MODAL WITH TOKEN INPUT AND CONFIRM BUTTON -->
+<!-- the login popup -->
 <div id="authModal" style="display:none;">
     <div class="modal-backdrop" id="modalBackdrop"></div>
     <div class="modal-box">
@@ -49,8 +47,7 @@
     </div>
 </div>
 
-
-                    <!-- THIS PART IS THE TRENDING CAROUSEL AT THE TOP OF THE PAGE -->
+<!-- trending movies at top -->
 <section id="trendingSection">
     <div class="trending-header">
         <h2>Trending This Week</h2>
@@ -61,13 +58,11 @@
     </div>
 </section>
 
-
-                    <!-- THIS PART IS THE MAIN TWO-COLUMN LAYOUT — LEFT FOR CONTENT, RIGHT FOR DETAILS -->
+<!-- main content area -->
 <main class="container">
-
     <div class="left-column">
 
-        <!-- THIS PART IS THE SEARCH VIEW — SHOWN WHEN A QUERY IS ACTIVE -->
+        <!-- search results -->
         <div id="searchView">
             <section class="content-section">
                 <div id="controls"></div>
@@ -75,7 +70,7 @@
             </section>
         </div>
 
-        <!-- THIS PART IS THE DISCOVER VIEW — GENRE FILTER WITH SORT OPTIONS -->
+        <!-- discover page -->
         <div id="discoverView" style="display:none;">
             <section class="content-section">
                 <h2 class="section-title">Discover by Genre</h2>
@@ -93,7 +88,7 @@
             </section>
         </div>
 
-        <!-- THIS PART IS THE COLLECTIONS VIEW — TOP RATED AND MOST POPULAR GRIDS -->
+        <!-- collections page -->
         <div id="collectionView" style="display:none;">
             <section class="content-section">
                 <h2 class="section-title">Top Rated Movies</h2>
@@ -105,7 +100,7 @@
             </section>
         </div>
 
-        <!-- THIS PART IS THE MY LISTS VIEW — TABBED FAVORITES AND WATCHLIST PANELS -->
+        <!-- my lists page -->
         <div id="listsView" style="display:none;">
             <section class="content-section">
                 <div class="lists-tabs">
@@ -127,8 +122,7 @@
 
     </div>
 
-
-                    <!-- THIS PART IS THE MOVIE DETAILS PANEL — STICKY COLUMN ON THE RIGHT -->
+    <!-- right side details -->
     <div class="right-column">
         <div class="movie-details">
             <h2>Movie Details</h2>
@@ -137,13 +131,10 @@
             </div>
         </div>
     </div>
-
 </main>
 
 
-                    <!-- THIS PART IS THE MUSTACHE TEMPLATES — MOVIE CARDS, DETAILS, AND PAGINATION -->
-
-<!-- TEMPLATE: RENDERS A GRID OF MOVIE CARDS WITH FAVORITE AND WATCHLIST BUTTONS -->
+<!-- movie card template -->
 <script id="movie-template" type="text/template">
 {{#movies}}
 <div class="movie-card" data-id="{{id}}">
@@ -162,7 +153,7 @@
 {{/movies}}
 </script>
 
-<!-- TEMPLATE: RENDERS THE FULL MOVIE DETAIL VIEW WITH POSTER, META, AND ACTION BUTTONS -->
+<!-- details template -->
 <script id="details-template" type="text/template">
 <div class="detail-poster-wrap">
     <img src="{{poster}}" alt="{{title}}">
@@ -180,7 +171,7 @@
 </div>
 </script>
 
-<!-- TEMPLATE: RENDERS PAGINATION BUTTONS AND GRID/LIST TOGGLE FOR THE SEARCH VIEW -->
+<!-- pagination template for search -->
 <script id="controls-template" type="text/template">
 <div class="controls-wrapper">
     <div class="pagination">
@@ -195,7 +186,7 @@
 </div>
 </script>
 
-<!-- TEMPLATE: RENDERS PAGINATION BUTTONS AND GRID/LIST TOGGLE FOR THE DISCOVER VIEW -->
+<!-- pagination template for discover -->
 <script id="discover-controls-template" type="text/template">
 <div class="controls-wrapper">
     <div class="pagination">
@@ -210,6 +201,6 @@
 </div>
 </script>
 
-<script src="movie.js"></script>
+<script src="movie2.js"></script>
 </body>
 </html>
