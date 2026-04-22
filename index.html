@@ -1,1 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMDB Movie Browser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+</head>
+<body>
 
+
+                    <!-- THIS PART IS THE STICKY HEADER WITH SEARCH, NAV BUTTONS, AND AUTH AREA -->
+<header>
+    <h1 style="color: #ffffff;">TMDB Browser</h1>
+    <div class="header-search">
+        <input type="text" id="searchInput" placeholder="Search movies...">
+        <button id="searchBtn" class="btn-primary">Search</button>
+        <button id="discoverBtn" class="btn-ghost">Discover</button>
+        <button id="collectionBtn" class="btn-ghost">Collections</button>
+        <button id="listsBtn" class="btn-ghost">My Lists</button>
+    </div>
+    <div class="header-actions">
+        <div id="authArea">
+            <button id="loginBtn" class="btn-ghost">Login with TMDB</button>
+        </div>
+        <div id="userArea" style="display:none;">
+            <span id="usernameDisplay"></span>
+            <button id="logoutBtn" class="btn-ghost">Logout</button>
+        </div>
+    </div>
+</header>
+
+
+                    <!-- THIS PART IS THE LOGIN MODAL WITH TOKEN INPUT AND CONFIRM BUTTON -->
+<div id="authModal" style="display:none;">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-box">
+        <h2>Login with TMDB</h2>
+        <button id="startAuthBtn" class="btn-primary">Open TMDB Login</button>
+        <hr>
+        <input type="text" id="tokenInput" placeholder="Paste approved request token...">
+        <button id="confirmTokenBtn" class="btn-primary">Confirm &amp; Login</button>
+        <button id="cancelAuthBtn" class="btn-ghost">Cancel</button>
+        <div id="authError" class="error-msg"></div>
+    </div>
+</div>
+
+
+                    <!-- THIS PART IS THE TRENDING CAROUSEL AT THE TOP OF THE PAGE -->
+<section id="trendingSection">
+    <div class="trending-header">
+        <h2>Trending This Week</h2>
+        <span class="carousel-hint">drag to scroll</span>
+    </div>
+    <div class="carousel-track-wrapper">
+        <div id="carouselTrack" class="carousel-track"></div>
+    </div>
+</section>
+
+
+                    <!-- THIS PART IS THE MAIN TWO-COLUMN LAYOUT — LEFT FOR CONTENT, RIGHT FOR DETAILS -->
+<main class="container">
+
+    <div class="left-column">
+
+        <!-- THIS PART IS THE SEARCH VIEW — SHOWN WHEN A QUERY IS ACTIVE -->
+        <div id="searchView">
+            <section class="content-section">
+                <div id="controls"></div>
+                <div id="resultsGrid" class="movie-grid"></div>
+            </section>
+        </div>
+
+        <!-- THIS PART IS THE DISCOVER VIEW — GENRE FILTER WITH SORT OPTIONS -->
+        <div id="discoverView" style="display:none;">
+            <section class="content-section">
+                <h2 class="section-title">Discover by Genre</h2>
+                <div class="genre-chips" id="genreChips"></div>
+                <div class="discover-sort">
+                    <label>Sort by:</label>
+                    <select id="sortSelect">
+                        <option value="popularity.desc">Most Popular</option>
+                        <option value="vote_average.desc">Highest Rated</option>
+                        <option value="release_date.desc">Newest First</option>
+                    </select>
+                </div>
+                <div id="discoverControls"></div>
+                <div id="discoverGrid" class="movie-grid"></div>
+            </section>
+        </div>
+
+        <!-- THIS PART IS THE COLLECTIONS VIEW — TOP RATED AND MOST POPULAR GRIDS -->
+        <div id="collectionView" style="display:none;">
+            <section class="content-section">
+                <h2 class="section-title">Top Rated Movies</h2>
+                <div id="topRatedMovies" class="movie-grid"></div>
+            </section>
+            <section class="content-section">
+                <h2 class="section-title">Most Popular Movies</h2>
+                <div id="mostPopularMovies" class="movie-grid"></div>
+            </section>
+        </div>
+
+        <!-- THIS PART IS THE MY LISTS VIEW — TABBED FAVORITES AND WATCHLIST PANELS -->
+        <div id="listsView" style="display:none;">
+            <section class="content-section">
+                <div class="lists-tabs">
+                    <button class="list-tab active" data-list="favorites">❤ Favorites</button>
+                    <button class="list-tab" data-list="watchlist">＋ Watchlist</button>
+                </div>
+                <div id="favoritesPanel" class="list-panel">
+                    <h2 class="section-title">❤ Favorites</h2>
+                    <div id="favoritesList" class="movie-grid"></div>
+                    <p class="empty-msg" id="favEmpty" style="display:none;">No favorites yet. Click ❤ on any movie</p>
+                </div>
+                <div id="watchlistPanel" class="list-panel" style="display:none;">
+                    <h2 class="section-title">＋ Watchlist</h2>
+                    <div id="watchlistList" class="movie-grid"></div>
+                    <p class="empty-msg" id="watchEmpty" style="display:none;">watchlist is empty.</p>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+
+                    <!-- THIS PART IS THE MOVIE DETAILS PANEL — STICKY COLUMN ON THE RIGHT -->
+    <div class="right-column">
+        <div class="movie-details">
+            <h2>Movie Details</h2>
+            <div id="movieDetails">
+                <p class="placeholder-msg">Select a movie to see details</p>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+                    <!-- THIS PART IS THE MUSTACHE TEMPLATES — MOVIE CARDS, DETAILS, AND PAGINATION -->
+
+<!-- TEMPLATE: RENDERS A GRID OF MOVIE CARDS WITH FAVORITE AND WATCHLIST BUTTONS -->
+<script id="movie-template" type="text/template">
+{{#movies}}
+<div class="movie-card" data-id="{{id}}">
+    <div class="card-poster">
+        <img src="{{poster}}" alt="{{title}}" loading="lazy">
+        <div class="card-overlay">
+            <button class="fav-btn {{favClass}}" data-id="{{id}}" title="Favorite">❤</button>
+            <button class="watch-btn {{watchClass}}" data-id="{{id}}" title="Watchlist">＋</button>
+        </div>
+    </div>
+    <div class="card-info">
+        <p class="card-title">{{title}}</p>
+        <span class="card-rating">⭐ {{rating}}</span>
+    </div>
+</div>
+{{/movies}}
+</script>
+
+<!-- TEMPLATE: RENDERS THE FULL MOVIE DETAIL VIEW WITH POSTER, META, AND ACTION BUTTONS -->
+<script id="details-template" type="text/template">
+<div class="detail-poster-wrap">
+    <img src="{{poster}}" alt="{{title}}">
+</div>
+<h3>{{title}}</h3>
+<div class="detail-meta">
+    <span><span class="meta-label">Release Date:</span> {{release_date}}</span>
+    <span><span class="meta-label">Rating:</span> {{vote_average}}</span>
+    <span><span class="meta-label">Language:</span> {{language}}</span>
+</div>
+<p class="detail-overview">{{overview}}</p>
+<div class="detail-actions">
+    <button class="fav-btn {{favClass}}" data-id="{{id}}">❤ {{favLabel}}</button>
+    <button class="watch-btn {{watchClass}}" data-id="{{id}}">＋ {{watchLabel}}</button>
+</div>
+</script>
+
+<!-- TEMPLATE: RENDERS PAGINATION BUTTONS AND GRID/LIST TOGGLE FOR THE SEARCH VIEW -->
+<script id="controls-template" type="text/template">
+<div class="controls-wrapper">
+    <div class="pagination">
+        {{#pages}}
+        <button class="page-btn {{active}}" data-page="{{number}}">{{number}}</button>
+        {{/pages}}
+    </div>
+    <div class="view-toggle">
+        <button id="gridBtn">⊞ Grid</button>
+        <button id="listBtn">≡ List</button>
+    </div>
+</div>
+</script>
+
+<!-- TEMPLATE: RENDERS PAGINATION BUTTONS AND GRID/LIST TOGGLE FOR THE DISCOVER VIEW -->
+<script id="discover-controls-template" type="text/template">
+<div class="controls-wrapper">
+    <div class="pagination">
+        {{#pages}}
+        <button class="discover-page-btn {{active}}" data-page="{{number}}">{{number}}</button>
+        {{/pages}}
+    </div>
+    <div class="view-toggle">
+        <button id="discoverGridBtn">⊞ Grid</button>
+        <button id="discoverListBtn">≡ List</button>
+    </div>
+</div>
+</script>
+
+<script src="movie.js"></script>
+</body>
+</html>
