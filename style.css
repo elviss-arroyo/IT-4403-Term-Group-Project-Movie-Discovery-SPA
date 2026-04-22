@@ -23,7 +23,7 @@ body {
 }
 
 
-                    /* THIS PART IS THE STICKY HEADER AT THE TOP */
+                    /* THIS PART IS THE STICKY HEADER AT THE TOP */ 
 header {
   display: flex;
   align-items: center;
