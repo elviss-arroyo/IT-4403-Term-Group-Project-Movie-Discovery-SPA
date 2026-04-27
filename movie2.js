@@ -416,7 +416,7 @@ $(document).ready(function () {
     // show movie details on the right
     function openMovieDetails(movieData) {                                                                    //THIS IS THE FUNCTION IM TALKING ABOUT 
         var id = movieData.id;
-        var templateData = {how 
+        var templateData = {
             id: id,
             poster: movieData.poster_path ? bigPic + movieData.poster_path : "",
             title: movieData.title,
