@@ -373,10 +373,10 @@ $(document).ready(function () {
     }
 
     // search function
-    function doSearch() {
-        $.get(theUrl + "/search/movie", { api_key: myApiKey, query: searchWord, page: pageNum })
+    function doSearch() {                                                                                                    // THIS FUNCTION IS USED FOR THE SEARCH BAR 
+        $.get(theUrl + "/search/movie", { api_key: myApiKey, query: searchWord, page: pageNum })                             // GET IS USED TO CALL API AND API SENDS BACK JSON DATA
             .done(function(data) {
-                putMoviesOnPage(data.results, "#resultsGrid");
+                putMoviesOnPage(data.results, "#resultsGrid");                                                                // PUT ON MOVIES PAGE BUILDS THE MOVIE CARDDS AND PRESTN ON PAGE, NO RELOAD 
                 makePageButtons(data.total_pages);
             });
     }
@@ -414,9 +414,9 @@ $(document).ready(function () {
     }
 
     // show movie details on the right
-    function openMovieDetails(movieData) {
+    function openMovieDetails(movieData) {                                                                    //THIS IS THE FUNCTION IM TALKING ABOUT 
         var id = movieData.id;
-        var templateData = {
+        var templateData = {how 
             id: id,
             poster: movieData.poster_path ? bigPic + movieData.poster_path : "",
             title: movieData.title,
